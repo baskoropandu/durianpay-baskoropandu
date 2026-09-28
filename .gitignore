@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+
+# Backend
+backend/.env
+backend/dashboard.db
+backend/bin/
+backend/.go/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Logs
+*.log
+
+# Editor
+.vscode/
+.idea/

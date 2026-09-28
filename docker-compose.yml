@@ -1,0 +1,36 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      HTTP_ADDR: ':8080'
+      OPENAPIYAML_LOCATION: '../openapi.yaml'
+      JWT_SECRET: 'dev-secret-replace-me'
+      JWT_EXPIRED: '24h'
+    volumes:
+      # Persist the SQLite database so seeded data survives restarts.
+      - backend-data:/app/backend
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'curl -f http://localhost:8080/dashboard/v1/auth/login -X POST -H "Content-Type: application/json" -d ''{"email":"cs@test.com","password":"password"}'' || exit 1'
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        BACKEND_HOST: backend:8080
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+
+volumes:
+  backend-data:
